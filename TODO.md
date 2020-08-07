@@ -7,6 +7,9 @@
 - split on spaces, newlines
 - remove apostrophes 
 - skip multi faced cards
+- transform numbers into words
+- reject unset cards
+- split types by dashes and space
 
 ### Name Parsing
 
