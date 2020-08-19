@@ -1,7 +1,9 @@
 import json as j
-from typing import List, Dict, Any
+from typing import List
 import re
 import numpy as np
+
+"""Script for converts raw MTG data into standard format for future processing"""
 
 UN_SETS = ['Unsanctioned', 'Unhinged', 'Unstable', 'Unglued']
 REMINDER_TEXT_REGEX = re.compile('\\(.+\\)')
@@ -12,6 +14,17 @@ SAVE_SPLIT_REGEX = re.compile('(}{)|:')
 TYPES_SPLIT_REGEX = re.compile('[( — ) ]')
 FLAVOR_TEXT_REGEX = re.compile('["!—?]')
 REMOVE_REGEX = re.compile('[•—]')
+
+
+def pad_jagged_matrix(matrix: List[List[str]]) -> np.ndarray:
+    """Pads the inner arrays of the given matrix of strings with empty strings such that each array is of length equal
+    to the largest array in the matrix. Then converts the array to a numpy array
+    :param matrix: matrix of strings
+    :return: square numpy array of strings
+    """
+    max_array_length = max(map(len, matrix))
+    matrix = [array + [''] * (max_array_length - len(array)) for array in matrix]
+    return np.array(matrix)
 
 
 def remove_card_name(card_name: str, text: str) -> str:
@@ -128,7 +141,12 @@ def parse_all_cards(json_path: str) -> None:
     for card in raw_cards:
         parsed_cards.extend(parse_cards(card))
 
-    names, mana_costs, types, texts, flavor_texts = [[None for _ in range(len(parsed_cards))]] * 5
+    empty_list = lambda: [None for _ in range(len(parsed_cards))]
+    names = empty_list()
+    mana_costs = empty_list()
+    types = empty_list()
+    texts = empty_list()
+    flavor_texts = empty_list()
     for idx, card in enumerate(parsed_cards):
         names[idx] = card['name']
         mana_costs[idx] = card['mana_cost']
@@ -138,7 +156,8 @@ def parse_all_cards(json_path: str) -> None:
 
     for lst, name in (names, 'card_names'), (mana_costs, 'mana_costs'), (types, 'card_types'), (texts, 'card_texts'), \
                      (flavor_texts, 'flavor_texts'):
-        np.save(name + '.npy', np.array(lst))
+        array = np.array(lst) if name in ['card_names', 'mana_costs'] else pad_jagged_matrix(lst)
+        np.save(f'numpy-files/{name}.npy', array)
 
 
 if __name__ == '__main__':

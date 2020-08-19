@@ -17,3 +17,7 @@
 - remove reminder text
 
 ### Flavor Text Parsing
+
+# Emebedding
+- Take different vectors representing different parts of a card --> convert to fixed size embedding
+- convert each vector to fixed size, concatenate, convert to small size..?
