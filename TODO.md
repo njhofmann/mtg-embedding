@@ -19,5 +19,6 @@
 ### Flavor Text Parsing
 
 # Emebedding
+- seq2seq autoencoder 
 - Take different vectors representing different parts of a card --> convert to fixed size embedding
 - convert each vector to fixed size, concatenate, convert to small size..?
