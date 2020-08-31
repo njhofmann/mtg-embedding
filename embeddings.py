@@ -24,6 +24,39 @@ def get_tokenizer(text: List[List[str]]) -> Tuple[List[List[int]], t.Tokenizer]:
     return tokenizer.texts_to_sequences(text), tokenizer
 
 
+def get_encoder(sent_len: int, embedding_len: int, word_count: int, lstm_units: int) -> Tuple[m.Model, l.Layer]:
+    encoder_inputs = l.Input(shape=(sent_len,), name='encoder-input')
+    embedded_inputs = l.Embedding(input_dim=word_count, output_dim=embedding_len, input_length=sent_len,
+                                  name='encoder-embedding', mask_zero=False)(encoder_inputs)
+    state_h = l.Bidirectional(l.LSTM(lstm_units, activation='relu', name='encoder-lstm'))(embedded_inputs)
+    return m.Model(inputs=encoder_inputs, outputs=state_h, name='encoder-model')(encoder_inputs), encoder_inputs
+
+
+def get_decoder(encoder_output: m.Model, sent_len: int, word_count: int, lstm_units: int) -> l.Layer:
+    decoded = l.RepeatVector(n=sent_len)(encoder_output)  # TODO what does this do
+    decoder_lstm = l.Bidirectional(l.LSTM(lstm_units, return_sequences=True, name='decoder-dense'))(decoded)
+    return l.Dense(word_count, activation='softmax', name='decoder-dense')(decoder_lstm)
+
+
+def get_seq_2_seq_autoencoder(embedding_len: int, word_count: int, sent_len: int, lstm_units: int) -> m.Model:
+    """Creates a seq2seq autoencoder using the given parameters
+    :param embedding_len: number of dimensions for the resulting embeddings wil
+    :param word_count: the number of unique words in the input
+    :param sent_len: how long each sentence is / length of the longest sequence
+    :param lstm_units: number of LSTM cells to use in encoder and decoder
+    :return: untrained seq2seq autoencoder
+    """
+    encoder, encoder_input = get_encoder(sent_len, embedding_len, word_count, lstm_units)
+    decoder = get_decoder(encoder, sent_len, word_count, lstm_units)
+    return m.Model(encoder_input, decoder)
+
+
+def train_autoencoder(model: m.Model, data: np.ndarray, epochs: int, batch_size: int) -> m.Model:
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['loss'])
+    model.fit(x=data, y=data, epochs=epochs, batch_size=batch_size)
+    return model
+
+
 if __name__ == '__main__':
     texts, text_count, text_len = load_data()
     unique_word_count = len(np.unique(texts))
@@ -32,16 +65,5 @@ if __name__ == '__main__':
 
     input_length = len(encoded_text[0])
 
-    model = m.Sequential([
-        l.Embedding(input_length=text_len, input_dim=unique_word_count + 1, output_dim=32),
-        l.Dense(units=256, activation='relu'),
-        l.Dense(units=1)
-    ])
-    print(model.summary())
-
-    model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
-    model.fit(x=tensor, y=tensor, epochs=32)
-
-    print(tokenizer.texts_to_sequences(texts))
-    print(len(np.unique(texts)))
-    print(tokenizer.sequences_to_texts([[5, 6, 98]]))
+    autoencoder = get_seq_2_seq_autoencoder()
+    autoencoder = train_autoencoder(autoencoder, batch_size=32, epochs=100)
