@@ -2,3 +2,4 @@ venv
 .idea
 oracle-cards-20200803170701.json
 *.npy
+pickle-files

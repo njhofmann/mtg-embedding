@@ -1,5 +1,6 @@
 import json as j
 from typing import List
+import pickle as p
 import re
 import numpy as np
 
@@ -17,14 +18,15 @@ REMOVE_REGEX = re.compile('[•—]')
 
 
 def pad_jagged_matrix(matrix: List[List[str]]) -> np.ndarray:
-    """Pads the inner arrays of the given matrix of strings with empty strings such that each array is of length equal
+    """Pads the inner arrays of the given matrix of strings with NaN such that each array is of length equal
     to the largest array in the matrix. Then converts the array to a numpy array
     :param matrix: matrix of strings
     :return: square numpy array of strings
     """
-    max_array_length = max(map(len, matrix))
-    matrix = [array + [''] * (max_array_length - len(array)) for array in matrix]
-    return np.array(matrix)
+    return np.append(arr=np.array([], dtype=np.str), values=[np.array(row, dtype=np.str) for row in matrix])
+    # max_array_length = max(map(len, matrix))
+    # matrix = [array + [np.NaN] * (max_array_length - len(array)) for array in matrix]
+    # return np.array(matrix)
 
 
 def remove_card_name(card_name: str, text: str) -> str:
@@ -156,8 +158,11 @@ def parse_all_cards(json_path: str) -> None:
 
     for lst, name in (names, 'card_names'), (mana_costs, 'mana_costs'), (types, 'card_types'), (texts, 'card_texts'), \
                      (flavor_texts, 'flavor_texts'):
-        array = np.array(lst) if name in ['card_names', 'mana_costs'] else pad_jagged_matrix(lst)
-        np.save(f'numpy-files/{name}.npy', array)
+        with open(f'pickle-files/{name}.pickle', 'wb') as f:
+            p.dump(lst, f)
+        # array = np.array(lst) if name in ['card_names', 'mana_costs'] else pad_jagged_matrix(lst)
+        # print(array)
+        # np.save(f'numpy-files/{name}.npy', array)
 
 
 if __name__ == '__main__':
