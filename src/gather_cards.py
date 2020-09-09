@@ -1,7 +1,8 @@
 import json as j
-from typing import List
 import pickle as p
 import re
+from typing import List
+
 import numpy as np
 
 """Script for converts raw MTG data into standard format for future processing"""
@@ -160,10 +161,7 @@ def parse_all_cards(json_path: str) -> None:
                      (flavor_texts, 'flavor_texts'):
         with open(f'pickle-files/{name}.pickle', 'wb') as f:
             p.dump(lst, f)
-        # array = np.array(lst) if name in ['card_names', 'mana_costs'] else pad_jagged_matrix(lst)
-        # print(array)
-        # np.save(f'numpy-files/{name}.npy', array)
 
 
 if __name__ == '__main__':
-    parse_all_cards('oracle-cards-20200803170701.json')
+    parse_all_cards('../oracle-cards-20200803170701.json')
