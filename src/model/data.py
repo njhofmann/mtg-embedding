@@ -68,6 +68,4 @@ def create_cross_valid_folds(tokens: RaggedIntArr, max_len: int, folds: int) -> 
 
 
 def convert_to_tensor(ints: RaggedIntArr, max_len: int) -> tf.Tensor:
-    padded = np.array(s.pad_sequences(ints, padding='post', maxlen=max_len))
-    reshaped = np.reshape(np.array(padded), newshape=(*padded.shape, 1))
-    return tf.convert_to_tensor(reshaped)
+    return tf.convert_to_tensor(s.pad_sequences(ints, padding='post', maxlen=max_len))

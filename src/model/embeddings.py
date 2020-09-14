@@ -1,11 +1,9 @@
-import pathlib as pl
-import pickle as p
 from typing import List, Tuple
+import math as m
 
-import numpy as np
 import tensorflow.keras.preprocessing.text as t
 
-import src.model.lstm_autoencoder as la
+import src.model.models.lstm_autoencoder as la
 import src.model.data as d
 import src.card_data as c
 
@@ -14,15 +12,17 @@ LSTM_UNITS = 128
 EPOCHS = 4
 EMBEDDING_LEN = 8
 RaggedIntArr = List[List[int]]
-PICKLE_DIRC = pl.Path(__file__).parent.parent.parent.joinpath('pickle-files/card_texts.pickle')
 
 
-def load_data() -> Tuple[List[List[str]], int, int]:
-    texts = c.load_pickle(c.CARD_TEXTS_PATH)
-    unique_texts = list(map(list, set(map(tuple, texts))))
-    num_of_texts = len(texts)
-    text_len = max(map(len, texts))
-    return unique_texts, num_of_texts, text_len
+def get_longest_sent_size(texts: List[List[str]]) -> int:
+    return max(map(len, texts))
+
+
+def vocab_size(texts: List[List[str]]) -> int:
+    words = set()
+    for sent in texts:
+        words.update(sent)
+    return len(words)
 
 
 def get_tokenizer(text: List[List[str]]) -> Tuple[RaggedIntArr, t.Tokenizer]:
@@ -32,12 +32,17 @@ def get_tokenizer(text: List[List[str]]) -> Tuple[RaggedIntArr, t.Tokenizer]:
     return tokens, tokenizer
 
 
-if __name__ == '__main__':
-    texts, text_count, max_sent_len = load_data()
-    unique_word_count = len(np.unique(texts))
-    encoded_text, tokenizer = get_tokenizer(texts)
+def optimal_embedding_len(vocab_size: int) -> float:
+    return m.ceil(vocab_size ** .25)
 
-    x_train, y_train, x_test = d.split_training_data(encoded_text)
+
+if __name__ == '__main__':
+    texts = c.load_pickle(c.CARD_TEXTS_PATH)
+    max_sent_len = get_longest_sent_size(texts)
+    unique_word_count = vocab_size(texts)
+    encoded_texts, tokenizer = get_tokenizer(texts)
+
+    x_train, y_train, x_test = d.split_training_data(encoded_texts)
     x_train = d.convert_to_tensor(x_train, max_sent_len)
     y_train = d.convert_to_tensor(y_train, max_sent_len)
     x_test = d.convert_to_tensor(x_test, max_sent_len)

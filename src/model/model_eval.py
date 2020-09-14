@@ -1,8 +1,7 @@
 from typing import Tuple
-import src.model.autoencoder as a
+import src.model.models.autoencoder as a
 import src.model.data as d
 from src.model.embeddings import RaggedIntArr
-import tensorflow as tf
 
 
 def eval_model(model: a.Seq2SeqAutoencoder, data: RaggedIntArr, max_len: int, folds: int) -> Tuple[float, float]:
