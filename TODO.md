@@ -11,26 +11,23 @@
 - reject unset cards
 - split types by dashes and space   
 
-### Name Parsing
-
-### Text Parsing
-- remove reminder text
-
 ### Evaluation Procedure
 - 5-folds cross validation for each model
 - nested cross validation for hyperparmeter selection and model evaluation
 - after model selection, retrain on whole dataset - w/ a hyperparameter optimization routine
 
+
 ### Flavor Text Parsing
 - autoencoder: embedding inputs into lower dimensional vector space, important features are given more emphasis
 - word embedding: similar words have similar encoding in a vector space
-
-- seq2seq autoencoder  / embedding
-- denoising autoencoder
-- Take different vectors representing different parts of a card --> convert to fixed size embedding
-convert each vector to fixed size, concatenate, convert to small size..?
-- lstm autoencoder, lstm autoenoder with attention, transformer autoencoder
-
+- configure embedding layer
+- how to combine embeddings of different cards
+- create models
+    - plain autoencoder
+    - lstm autoencoder
+    - lstm autoencoder w/ attention
+    - transformer autoencoder
+ 
 https://sebastianraschka.com/faq/docs/evaluate-a-model.html
 https://weina.me/nested-cross-validation/
 https://machinelearningmastery.com/attention-long-short-term-memory-recurrent-neural-networks/

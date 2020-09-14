@@ -7,6 +7,7 @@ import tensorflow.keras.preprocessing.text as t
 
 import src.model.lstm_autoencoder as la
 import src.model.data as d
+import src.card_data as c
 
 BATCH_SIZE = 128
 LSTM_UNITS = 128
@@ -17,8 +18,7 @@ PICKLE_DIRC = pl.Path(__file__).parent.parent.parent.joinpath('pickle-files/card
 
 
 def load_data() -> Tuple[List[List[str]], int, int]:
-    with open(PICKLE_DIRC, 'rb') as f:
-        texts = p.load(f)
+    texts = c.load_pickle(c.CARD_TEXTS_PATH)
     unique_texts = list(map(list, set(map(tuple, texts))))
     num_of_texts = len(texts)
     text_len = max(map(len, texts))

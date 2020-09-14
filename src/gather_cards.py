@@ -5,6 +5,8 @@ from typing import List
 
 import numpy as np
 
+import src.card_data as c
+
 """Script for converts raw MTG data into standard format for future processing"""
 
 UN_SETS = ['Unsanctioned', 'Unhinged', 'Unstable', 'Unglued']
@@ -157,9 +159,9 @@ def parse_all_cards(json_path: str) -> None:
         texts[idx] = card['text']
         flavor_texts[idx] = card['flavor_text']
 
-    for lst, name in (names, 'card_names'), (mana_costs, 'mana_costs'), (types, 'card_types'), (texts, 'card_texts'), \
-                     (flavor_texts, 'flavor_texts'):
-        with open(f'pickle-files/{name}.pickle', 'wb') as f:
+    for lst, name in (names, c.CARD_NAMES_PATH), (mana_costs, c.MANA_COSTS_PATH), (types, c.CARD_TYPES_PATH), \
+                     (texts, c.CARD_TEXTS_PATH), (flavor_texts, c.FLAVOR_TEXTS_PATH):
+        with open(name, 'wb') as f:
             p.dump(lst, f)
 
 
