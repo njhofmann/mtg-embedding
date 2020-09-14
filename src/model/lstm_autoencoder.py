@@ -6,10 +6,11 @@ import tensorflow.keras.models as m
 
 
 def get_encoder(sent_len: int, embedding_len: int, word_count: int, lstm_units: int) -> Tuple[m.Model, l.Layer]:
-    encoder_inputs = l.Input(shape=(sent_len,), name='encoder-input')
-    embedded_inputs = l.Embedding(input_dim=word_count, output_dim=embedding_len, input_length=sent_len,
-                                  name='encoder-embedding', mask_zero=False)(encoder_inputs)
-    state_h = l.Bidirectional(l.LSTM(lstm_units, activation='relu', name='encoder-lstm'))(embedded_inputs)
+    encoder_inputs = l.Input(shape=(sent_len, 1), name='encoder-input')
+    # embedded_inputs = l.Embedding(input_dim=word_count, output_dim=embedding_len, input_length=sent_len,
+    #                               name='encoder-embedding', mask_zero=False)(encoder_inputs)
+    # samples x timesteps x features
+    state_h = l.Bidirectional(l.LSTM(lstm_units, activation='relu', name='encoder-lstm'))(encoder_inputs)
     return m.Model(inputs=encoder_inputs, outputs=state_h, name='encoder-model')(encoder_inputs), encoder_inputs
 
 

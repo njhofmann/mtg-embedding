@@ -46,5 +46,6 @@ if __name__ == '__main__':
                                                   word_count=unique_word_count,
                                                   sent_len=max_sent_len,
                                                   lstm_units=LSTM_UNITS)
+    print(autoencoder.summary())
     autoencoder = la.train_autoencoder(autoencoder, x=x_train, y=y_train, batch_size=BATCH_SIZE, epochs=EPOCHS)
     print(autoencoder.evaluate(x=x_test, y=x_test))
