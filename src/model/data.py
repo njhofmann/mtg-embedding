@@ -1,9 +1,10 @@
 import random as r
-from typing import List, Tuple, Generator, Iterator
-from src.model.embeddings import RaggedIntArr
+from typing import List, Tuple, Iterator
+
 import tensorflow as tf
 import tensorflow.keras.preprocessing.sequence as s
-import numpy as np
+
+from src.model.embeddings import RaggedIntArr
 
 """Methods dealing with data related actions such as augmentation, train-test splitting, etc."""
 

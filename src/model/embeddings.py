@@ -1,11 +1,11 @@
-from typing import List, Tuple
 import math as m
+from typing import List, Tuple
 
 import tensorflow.keras.preprocessing.text as t
 
-import src.model.models.lstm_autoencoder as la
-import src.model.data as d
 import src.card_data as c
+import src.model.data as d
+import src.model.models.lstm_autoencoder as la
 
 BATCH_SIZE = 128
 LSTM_UNITS = 128

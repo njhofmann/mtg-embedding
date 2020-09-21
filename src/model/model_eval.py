@@ -1,6 +1,7 @@
 from typing import Tuple
-import src.model.models.autoencoder as a
+
 import src.model.data as d
+import src.model.models.autoencoder as a
 from src.model.embeddings import RaggedIntArr
 
 
