@@ -3,9 +3,9 @@ from typing import List, Tuple
 
 import tensorflow.keras.preprocessing.text as t
 
-import src.card_data as c
+import src.paths as c
 import src.model.data as d
-import src.model.models.lstm_autoencoder as la
+import src.model.models as md
 
 BATCH_SIZE = 128
 LSTM_UNITS = 128
@@ -47,10 +47,10 @@ if __name__ == '__main__':
     y_train = d.convert_to_tensor(y_train, max_sent_len)
     x_test = d.convert_to_tensor(x_test, max_sent_len)
 
-    autoencoder = la.create_seq_2_seq_autoencoder(embedding_len=EMBEDDING_LEN,
-                                                  word_count=unique_word_count,
-                                                  sent_len=max_sent_len,
-                                                  lstm_units=LSTM_UNITS)
-    print(autoencoder.summary())
-    autoencoder = la.train_autoencoder(autoencoder, x=x_train, y=y_train, batch_size=BATCH_SIZE, epochs=EPOCHS)
-    print(autoencoder.evaluate(x=x_test, y=x_test))
+    autoencoder = md.LSTMAutoencoder(input_embedding_len=EMBEDDING_LEN,
+                                     vocab_size=unique_word_count,
+                                     sent_len=max_sent_len,
+                                     lstm_units=LSTM_UNITS)
+    autoencoder.summary()
+    autoencoder.train(x_train, y_train, EPOCHS, BATCH_SIZE)
+    autoencoder.eval(x_test)

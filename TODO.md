@@ -33,7 +33,7 @@ https://weina.me/nested-cross-validation/
 
 https://machinelearningmastery.com/attention-long-short-term-memory-recurrent-neural-networks/
 https://machinelearningmastery.com/encoder-decoder-attention-sequence-to-sequence-prediction-keras/
-http://yaronvazana.com/2019/09/28/training-an-autoencoder-to-generate-text-embeddings/
+    http://yaronvazana.com/2019/09/28/training-an-autoencoder-to-generate-text-embeddings/
 https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
 https://machinelearningmastery.com/lstm-autoencoders/
 https://machinelearningmastery.com/develop-encoder-decoder-model-sequence-sequence-prediction-keras/

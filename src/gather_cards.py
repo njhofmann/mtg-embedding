@@ -5,7 +5,7 @@ from typing import List
 
 import numpy as np
 
-import src.card_data as c
+import src.paths as c
 
 """Script for converts raw MTG data into standard format for future processing"""
 

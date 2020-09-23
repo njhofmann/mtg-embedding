@@ -1,7 +1,9 @@
 import pathlib as pl
 import pickle as p
 
-PICKLE_DIRC = pl.Path(__file__).parent.parent.joinpath('pickle-files')
+MAIN_DIRC = pl.Path(__file__).parent.parent
+MODEL_DIRC = MAIN_DIRC.joinpath('models')
+PICKLE_DIRC = MAIN_DIRC.joinpath('pickle-files')
 CARD_NAMES_PATH = PICKLE_DIRC.joinpath('card_names.pickle')
 MANA_COSTS_PATH = PICKLE_DIRC.joinpath('mana_costs.pickle')
 CARD_TYPES_PATH = PICKLE_DIRC.joinpath('card_types.pickle')
