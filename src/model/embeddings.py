@@ -3,9 +3,9 @@ from typing import List, Tuple
 
 import tensorflow.keras.preprocessing.text as t
 
-import src.paths as c
 import src.model.data as d
 import src.model.models as md
+import src.paths as c
 
 BATCH_SIZE = 128
 LSTM_UNITS = 128

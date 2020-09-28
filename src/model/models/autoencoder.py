@@ -1,5 +1,4 @@
 import abc
-import pathlib as pl
 from typing import Tuple, List, Optional
 
 import tensorflow as tf
