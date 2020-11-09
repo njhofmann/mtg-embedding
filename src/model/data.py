@@ -4,7 +4,7 @@ from typing import List, Tuple, Iterator
 import tensorflow as tf
 import tensorflow.keras.preprocessing.sequence as s
 
-from src.model.embeddings import RaggedIntArr
+from model.custom_types import RaggedIntArr
 
 """Methods dealing with data related actions such as augmentation, train-test splitting, etc."""
 
@@ -54,7 +54,8 @@ def split_training_data(tokens: List[List[int]], split: float = .8) -> Tuple[Rag
     return train_x, train_y, test
 
 
-def create_cross_valid_folds(tokens: RaggedIntArr, max_len: int, folds: int) -> Iterator[Tuple[tf.Tensor, tf.Tensor, tf.Tensor]]:
+def create_cross_valid_folds(tokens: RaggedIntArr, max_len: int, folds: int)\
+        -> Iterator[Tuple[tf.Tensor, tf.Tensor, tf.Tensor]]:
     test_size = round(len(tokens) / folds)
     for i in range(folds):
         split_idx = i * test_size

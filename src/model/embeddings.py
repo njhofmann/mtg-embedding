@@ -1,17 +1,17 @@
 import math as m
 from typing import List, Tuple
+import itertools as it
 
 import tensorflow.keras.preprocessing.text as t
 
-import src.model.data as d
-import src.model.models as md
+from model.custom_types import RaggedIntArr
+from src.model import data as d, models as md
 import src.paths as c
 
 BATCH_SIZE = 128
 LSTM_UNITS = 128
 EPOCHS = 4
 EMBEDDING_LEN = 8
-RaggedIntArr = List[List[int]]
 
 
 def get_longest_sent_size(texts: List[List[str]]) -> int:
@@ -19,10 +19,7 @@ def get_longest_sent_size(texts: List[List[str]]) -> int:
 
 
 def vocab_size(texts: List[List[str]]) -> int:
-    words = set()
-    for sent in texts:
-        words.update(sent)
-    return len(words)
+    return len(set(it.chain(*texts)))
 
 
 def get_tokenizer(text: List[List[str]]) -> Tuple[RaggedIntArr, t.Tokenizer]:

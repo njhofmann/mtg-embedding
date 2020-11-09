@@ -1,3 +1,8 @@
+1. args -> model training
+1. nested cross validation? when need do parameter tuning
+1. place data augmentation into hyper parameter loop?
+1. add learning rate as hyperparameter
+
 ### Parsing
 - lowercase all words
 - replace card names from text and flavor text with ~
@@ -15,7 +20,6 @@
 - 5-folds cross validation for each model
 - nested cross validation for hyperparmeter selection and model evaluation
 - after model selection, retrain on whole dataset - w/ a hyperparameter optimization routine
-
 
 ### Flavor Text Parsing
 - autoencoder: embedding inputs into lower dimensional vector space, important features are given more emphasis

@@ -10,8 +10,10 @@ import src.model.models.autoencoder as a
 
 class LSTMAutoencoder(a.Seq2SeqAutoencoder):
 
-    def __init__(self, lstm_units: int, input_embedding_len: int, sent_len: int, vocab_size: int) -> None:
+    def __init__(self, lstm_units: int, input_embedding_len: int, sent_len: int, vocab_size: int,
+                 attention: bool = False) -> None:
         super(LSTMAutoencoder, self).__init__()
+        # TODO add attention modules here
         self.lstm_units = lstm_units
         self.input_embedding_len = input_embedding_len
         self.sent_len = sent_len
@@ -27,7 +29,7 @@ class LSTMAutoencoder(a.Seq2SeqAutoencoder):
                                       input_length=self.sent_len, name='encoder-embedding',
                                       mask_zero=False)(encoder_inputs)
         # samples x timesteps x features
-        state_h = l.Bidirectional(l.LSTM(self.lstm_units, activation='relu', name='encoder-lstm'))(embedded_inputs)
+        state_h = l.Bidirectional(l.LSTM(self.lstm_units, activation='tanh', name='encoder-lstm'))(embedded_inputs)
         encoder = m.Model(inputs=encoder_inputs, outputs=state_h, name='encoder-model')
         encoder_outputs = encoder(encoder_inputs)
         return encoder, encoder_outputs, encoder_inputs
@@ -36,7 +38,8 @@ class LSTMAutoencoder(a.Seq2SeqAutoencoder):
         decoded = l.RepeatVector(n=self.sent_len)(encoder_output)  # TODO what does this do
         decoder_lstm = l.Bidirectional(l.LSTM(self.lstm_units, return_sequences=True, name='decoder-dense'))(decoded)
         final_layer = l.Dense(self.vocab_size, activation='softmax', name='decoder-dense')(decoder_lstm)
-        decoder = m.Model(ly.Input(shape=encoder_output.shape), final_layer, name='decoder-model')
+        decoder =None # m.Model(ly.Input(shape=tuple(encoder_output.shape)), final_layer, name='decoder-model')
+        # TODO fix me
         return decoder, final_layer
 
     def train(self, x: tf.Tensor, y: tf.Tensor, epochs: int, batch_size: int) -> None:
