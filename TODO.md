@@ -1,7 +1,15 @@
-1. args -> model training
+1. fix LSTM decoder..?
+1. get plain autoencoder working
+    1. add embeddings?
+1. integrate mana-costs into arg parsing
 1. nested cross validation? when need do parameter tuning
 1. place data augmentation into hyper parameter loop?
+1. regularization
 1. add learning rate as hyperparameter
+1. additional user params
+    1. data augmentation rates
+    1. learning rate
+1. saving and loading models
 
 ### Parsing
 - lowercase all words
@@ -46,3 +54,5 @@ https://machinelearningmastery.com/encoder-decoder-long-short-term-memory-networ
 https://machinelearningmastery.com/attention-long-short-term-memory-recurrent-neural-networks/
 https://www.tensorflow.org/tutorials/text/transformer
 https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html
+
+https://towardsdatascience.com/build-the-right-autoencoder-tune-and-optimize-using-pca-principles-part-i-1f01f821999b

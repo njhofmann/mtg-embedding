@@ -60,7 +60,7 @@ class Seq2SeqAutoencoder(abc.ABC):
     def save_model(self, extra: str) -> None:
         save_name = f'{type(self)}_{{}}_{extra}.h5'
         self.encoder.save(p.MAIN_DIRC.joinpath(save_name.format('encoder')))
-        self.decoder.save(p.MAIN_DIRC.joinpath(save_name.format('decoder')))
+        #self.decoder.save(p.MAIN_DIRC.joinpath(save_name.format('decoder')))
         self.autoencoder.save(p.MAIN_DIRC.joinpath(save_name.format('autoencoder')))
 
     def load_model(self) -> None:
