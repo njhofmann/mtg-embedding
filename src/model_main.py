@@ -72,9 +72,9 @@ def get_parser() -> ap.ArgumentParser:
                         help='dataset to design an autoencoder around')
     parser.add_argument('-r', '--regime', required=True, type=TrainingRegimes.to_option,
                         help='training regime for model - evaluation and/or final model')
-    parser.add_argument('-e', '--epochs', default=8, help='max epochs for training')
+    parser.add_argument('-e', '--epochs', default=8, type=int, help='max epochs for training')
     parser.add_argument('-k', '--cross-val-folds', default=5, help='folds for cross validation')
-    parser.add_argument('-l', '--layers', default=[32, 16], type=parse_layer_option,
+    parser.add_argument('-l', '--layers', default=[32, 16], type=parse_layer_option, nargs='+',
                         help='num of nodes per layer for plain autoencoder, or LSTM units for LSTM architecture')
     parser.add_argument('-el', '--embedding_len', default=-1, type=int, help='embedding')
     parser.add_argument('-b', '--batch_size', type=int, default=8, help='batch size for training models')

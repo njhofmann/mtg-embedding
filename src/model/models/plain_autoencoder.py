@@ -1,7 +1,7 @@
 from typing import Tuple, List
 
 import tensorflow as tf
-from tensorflow.keras import models as m, layers as ly
+from tensorflow.keras import models as m, layers as ly, losses as l
 
 import src.model.models.autoencoder as a
 
@@ -23,7 +23,7 @@ class PlainAutoencoder(a.Seq2SeqAutoencoder):
         return len(nums) == 1 or all([nums[i] > nums[i + 1] for i in range(len(nums) - 1)])
 
     def compile(self) -> None:
-        self.autoencoder.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        self.autoencoder.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
     def create_recursive_dense_layers(self, input_layer: ly.Input, reverse: bool = False) -> ly.Dense:
         dense_layer = None

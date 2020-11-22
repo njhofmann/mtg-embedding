@@ -12,7 +12,7 @@ def eval_model(model: a.Seq2SeqAutoencoder, data: RaggedIntArr, max_len: int, fo
         model.train(x_data, y_data, epochs, batch_size)
         loss, accuracy = model.eval(test_data)
         avg_loss += loss
-        avg_accuracy += avg_accuracy
+        avg_accuracy += accuracy
         print(f'iteration {i}: loss {loss}, accuracy {accuracy}')
     return avg_loss / folds, avg_accuracy / folds
 
