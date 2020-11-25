@@ -4,6 +4,7 @@ from typing import Union, List
 
 from src import options as o, parser as p, util as u
 from src.model import embeddings as e, data as d, model_eval as v
+from util import get_embedding_len
 
 """Program for training and evaluating different autoencoders based on user args"""
 
@@ -11,10 +12,6 @@ from src.model import embeddings as e, data as d, model_eval as v
 def parse_layer_option(arg: str) -> Union[List[int], int]:
     args = [int(i) for i in arg.split(' ')]
     return args[0] if len(args) == 1 else args
-
-
-def get_embedding_len(embed_len: int, vocab_size: int) -> int:
-    return embed_len if embed_len > 0 else e.optimal_embedding_len(vocab_size)
 
 
 def get_parser() -> ap.ArgumentParser:
