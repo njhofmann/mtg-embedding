@@ -13,7 +13,6 @@ from src.model import embeddings as e, data as d, model_eval as m
 
 def load_hyperparams_file(path: str) -> Dict[str, List[g.HyperparamVals]]:
     with open(path, 'r') as f:
-        # TODO double check this
         return y.load(f.read())
 
 
@@ -53,29 +52,36 @@ if __name__ == '__main__':
 
     evaluate, final = u.eval_regime(args.regime)
 
-    # TODO learning rate(s),
-    #  TODO train test validation splits
-    # TODO model training verobsity
-
     if evaluate:
-        # TODO separate out inner and outer cross validation folds?
-        # TODO remove data augmentation from outer loop
-        outer_cross_valid = d.create_cross_valid_folds(encoded_texts, max_sent_len, args.cross_valid_folds)
+        avg_loss, avg_acc = 0, 0
+        outer_cross_valid = d.gen_cross_valid_folds(encoded_texts, args.cross_valid_folds)
         for i, (aug_train_data, reg_train_data, test_data) in enumerate(outer_cross_valid):
-            reg_train_data = np.unique(reg_train_data)
-            best_hyperparams, best_score = hyperparameter_search(reg_train_data, hyperparams)
+            aug_train_tensor, reg_train_tensor, test_tensor = d.convert_to_tensors(
+                max_sent_len, aug_train_data, reg_train_data, test_data)
+            best_hyperparams, _ = hyperparameter_search(reg_train_data, hyperparams)
 
             print(f'cross validation fold {i}, selected params: {best_hyperparams}')
-            # TODO reinit final model and test on test data
-            # TODO print out relevant info
+
             best_model = o.init_model(model_type, layers=best_hyperparams['layers'], vocab_size=unique_word_count,
                                       sent_len=max_sent_len, embedding_len=embedding_len)
-            best_model.train(aug_train_data, reg_train_data, batch_size=best_hyperparams['batch_size'],
+            best_model.train(aug_train_tensor, reg_train_tensor, batch_size=best_hyperparams['batch_size'],
                              epochs=best_hyperparams['epochs'])
-            fold_loss, fold_acc = best_model.eval(test_data)
+            fold_loss, fold_acc = best_model.eval(test_tensor)
+
             print(f'cross validation fold {i}: test loss {fold_loss}, test accuracy {fold_acc}')
 
+            avg_loss += fold_loss
+            avg_acc += fold_acc
+
+        print(f'average cross validation - loss {avg_loss / cross_val_folds}, accuracy {avg_acc / cross_val_folds}')
+
     if final:
-        # TODO hyperparam search
-        # TODO train on full dataset
-        pass
+        best_hyperparams, _ = hyperparameter_search(encoded_texts, hyperparams)
+        print(f'best hyperparameters for final model: {best_hyperparams}')
+
+        best_model = o.init_model(model_type, layers=best_hyperparams['layers'], vocab_size=unique_word_count,
+                                  sent_len=max_sent_len, embedding_len=embedding_len)
+        x_data, y_data = d.convert_to_tensors(max_sent_len, *d.augment_data(encoded_texts))
+        best_model.train(x_data, y_data, batch_size=best_hyperparams['batch_size'],
+                         epochs=best_hyperparams['epochs'])
+        best_model.save_model(args.save_extra)

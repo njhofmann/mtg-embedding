@@ -54,8 +54,8 @@ def split_training_data(tokens: List[List[int]], split: float = .8) -> Tuple[Rag
     return train_x, train_y, test
 
 
-def create_cross_valid_folds(tokens: RaggedIntArr, max_len: int, folds: int)\
-        -> Iterator[Tuple[tf.Tensor, tf.Tensor, tf.Tensor]]:
+def gen_cross_valid_folds(tokens: RaggedIntArr, folds: int) \
+        -> Iterator[Tuple[RaggedIntArr, RaggedIntArr, RaggedIntArr]]:
     test_size = round(len(tokens) / folds)
     for i in range(folds):
         split_idx = i * test_size
@@ -63,11 +63,12 @@ def create_cross_valid_folds(tokens: RaggedIntArr, max_len: int, folds: int)\
         test = tokens[split_idx:next_idx]
         train = tokens[0:split_idx] + tokens[next_idx:]
         train_x, train_y = augment_data(train)
-        train_x = convert_to_tensor(train_x, max_len)
-        train_y = convert_to_tensor(train_y, max_len)
-        test = convert_to_tensor(test, max_len)
         yield train_x, train_y, test
 
 
 def convert_to_tensor(ints: RaggedIntArr, max_len: int) -> tf.Tensor:
     return tf.convert_to_tensor(s.pad_sequences(ints, padding='post', maxlen=max_len))
+
+
+def convert_to_tensors(max_len: int, *ints: RaggedIntArr) -> List[tf.Tensor]:
+    return [tf.convert_to_tensor(s.pad_sequences(x, padding='post', maxlen=max_len)) for x in ints]

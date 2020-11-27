@@ -6,7 +6,6 @@
 1. add hyperparameter tuning via 
     1. json file listing out hyperparameter 
     1. use grid search and cross validation
-1. place data augmentation into hyper parameter loop?
 1. regularization
 1. add learning rate as hyperparameter
 1. additional user params
