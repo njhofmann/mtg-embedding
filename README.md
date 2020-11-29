@@ -14,7 +14,7 @@ very high dimensional set of objects.
 This project does not use raw images of MTG cards, opting instead to use the textual data making up a card's 
 converted mana cost, type line, text, and any flavor text (of course keep the card name for reference). Since the 
 dimensionality of each different aspect being considered differents, autoencoder models are evaluated separately for 
-each ascpect.
+each aspects (plain, LSTM, and transformer based autoencoders with various hyperparameter setups).
 
 This means a separate encoder (and thus set of embeddings) is created for converted mana costs, type lines, card texts, 
 and flavor texts. To create a single embedding for a MTG card, these separate embeddings are concatenated together.
