@@ -1,6 +1,7 @@
 import json as j
 import pickle as p
 import re
+import sys
 from typing import List
 
 import numpy as np
@@ -166,4 +167,6 @@ def parse_all_cards(json_path: str) -> None:
 
 
 if __name__ == '__main__':
-    parse_all_cards('../oracle-cards-20200803170701.json')
+    if len(sys.argv) != 2:
+        raise ValueError('require one arg, name of bulk data dump of MTG cards')
+    parse_all_cards(sys.argv[1])
