@@ -19,8 +19,8 @@ def get_parser() -> ap.ArgumentParser:
     parser.add_argument('-e', '--epochs', default=8, type=int, help='max epochs for training')
     parser.add_argument('-l', '--layers', default=[32, 16], type=parse_layer_option, nargs='+',
                         help='num of nodes per layer for plain autoencoder, or LSTM units for LSTM architecture')
-    parser.add_argument('-el', '--embedding_len', default=-1, type=int, help='embedding')
     parser.add_argument('-b', '--batch_size', type=int, default=8, help='batch size for training models')
+    parser.add_argument('-lr', '--learning_rate', type=float, help='ADAM learning rate')
     return parser
 
 
@@ -41,7 +41,8 @@ if __name__ == '__main__':
     epochs = args.epochs
 
     embed_len = get_embedding_len(args.embedding_len, unique_word_count)
-    model = o.init_model(args.model, args.layers, embed_len, unique_word_count, max_sent_len)
+    layers = args.layers[0] if len(args.layers) == 1 else args.layers
+    model = o.init_model(args.model, layers, embed_len, unique_word_count, max_sent_len, args.learning_rate)
     print(model.summary())
 
     evaluate, final = u.eval_regime(args.regime)

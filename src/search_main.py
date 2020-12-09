@@ -26,8 +26,12 @@ def hyperparameter_search(test_data: List[List[int]], hyperparams: Dict[str, Lis
         -> Tuple[Dict[str, g.HyperparamVals], int]:
     best_params, best_score = None, 0
     for hyperparam_set in g.hyperparameter_grid_search(hyperparams):
-        model = o.init_model(model_type, layers=hyperparam_set['layers'], vocab_size=unique_word_count,
-                             sent_len=max_sent_len, embedding_len=embedding_len)
+        model = o.init_model(model_type,
+                             layers=hyperparam_set['layers'],
+                             vocab_size=unique_word_count,
+                             sent_len=max_sent_len,
+                             embedding_len=embedding_len,
+                             learning_rate=hyperparam_set['learning-rate'])
         test_loss, test_acc = m.eval_model(model, test_data, max_sent_len, cross_val_folds,
                                            batch_size=hyperparam_set['batch_size'],
                                            epochs=hyperparam_set['epochs'])
@@ -40,16 +44,24 @@ def hyperparameter_search(test_data: List[List[int]], hyperparams: Dict[str, Lis
 
 if __name__ == '__main__':
     args = init_parser().parse_args(sys.argv[1:])
+
+    if args.data == o.DataOptions.ManaCosts and args.model != o.ModelOptions.Plain:
+        raise ValueError('can only train mana costs with a normal autoencoder')
+
     cross_val_folds = args.cross_val_folds
     model_type = args.model
     hyperparams = load_hyperparams_file(args.hyperparams_path)
     data = o.load_data(args.data)
+
     max_sent_len = e.get_longest_sent_size(data)
     unique_word_count = e.vocab_size(data) + 1
-    encoded_texts, tokenizer = e.get_tokenizer(data)
+
+    if args.data == o.DataOptions.ManaCosts:
+        encoded_texts = d.convert_to_tensor(data, max_sent_len)
+    else:
+        encoded_texts, tokenizer = e.get_tokenizer(data)
 
     embedding_len = u.get_embedding_len(args.embedding_len, unique_word_count)
-
     evaluate, final = u.eval_regime(args.regime)
 
     if evaluate:
@@ -62,9 +74,14 @@ if __name__ == '__main__':
 
             print(f'cross validation fold {i}, selected params: {best_hyperparams}')
 
-            best_model = o.init_model(model_type, layers=best_hyperparams['layers'], vocab_size=unique_word_count,
-                                      sent_len=max_sent_len, embedding_len=embedding_len)
-            best_model.train(aug_train_tensor, reg_train_tensor, batch_size=best_hyperparams['batch_size'],
+            best_model = o.init_model(model_type,
+                                      layers=best_hyperparams['layers'],
+                                      vocab_size=unique_word_count,
+                                      sent_len=max_sent_len,
+                                      embedding_len=embedding_len,
+                                      learning_rate=best_hyperparams['learning-rate'])
+            best_model.train(aug_train_tensor, reg_train_tensor,
+                             batch_size=best_hyperparams['batch-size'],
                              epochs=best_hyperparams['epochs'])
             fold_loss, fold_acc = best_model.eval(test_tensor)
 
@@ -79,9 +96,14 @@ if __name__ == '__main__':
         best_hyperparams, _ = hyperparameter_search(encoded_texts, hyperparams)
         print(f'best hyperparameters for final model: {best_hyperparams}')
 
-        best_model = o.init_model(model_type, layers=best_hyperparams['layers'], vocab_size=unique_word_count,
-                                  sent_len=max_sent_len, embedding_len=embedding_len)
+        best_model = o.init_model(model_type,
+                                  layers=best_hyperparams['layers'],
+                                  vocab_size=unique_word_count,
+                                  sent_len=max_sent_len,
+                                  embedding_len=embedding_len,
+                                  learning_rate=best_hyperparams['learning-rate'])
         x_data, y_data = d.convert_to_tensors(max_sent_len, *d.augment_data(encoded_texts))
-        best_model.train(x_data, y_data, batch_size=best_hyperparams['batch_size'],
+        best_model.train(x_data, y_data,
+                         batch_size=best_hyperparams['batch-size'],
                          epochs=best_hyperparams['epochs'])
         best_model.save_model(args.save_extra)

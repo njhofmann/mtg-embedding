@@ -48,15 +48,15 @@ def load_data(data_type: DataOptions) -> list:
 
 
 def init_model(model_type: ModelOptions, layers: Union[int, List[int]], embedding_len: int, vocab_size: int,
-               sent_len: int) -> m.Seq2SeqAutoencoder:
+               sent_len: int, learning_rate: float) -> m.Seq2SeqAutoencoder:
     if model_type == ModelOptions.Plain and isinstance(layers, list):
-        return m.PlainAutoencoder(input_len=sent_len, dense_sizes=layers)
+        return m.PlainAutoencoder(input_len=sent_len, dense_sizes=layers, learning_rate=learning_rate)
     elif model_type == ModelOptions.LSTM and isinstance(layers, int):
         return m.LSTMAutoencoder(lstm_units=layers, input_embedding_len=embedding_len, vocab_size=vocab_size,
-                                 sent_len=sent_len)
+                                 sent_len=sent_len, learning_rate=learning_rate)
     elif model_type == ModelOptions.LSTMAttention:
         return m.LSTMAutoencoder(lstm_units=layers, input_embedding_len=embedding_len, vocab_size=vocab_size,
-                                 sent_len=sent_len, attention=True)
+                                 sent_len=sent_len, attention=True, learning_rate=learning_rate)
     elif model_type == ModelOptions.Transformer:  # TODO transformer
         raise NotImplemented()
     raise ValueError('invalid model arguments')

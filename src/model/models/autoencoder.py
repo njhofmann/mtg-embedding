@@ -13,7 +13,8 @@ import src.paths as p
 
 class Seq2SeqAutoencoder(abc.ABC):
 
-    def __init__(self):
+    def __init__(self, learning_rate: float) -> None:
+        self.learning_rate = learning_rate
         self.encoder: Optional[m.Model] = None
         self.decoder: Optional[m.Model] = None
         self.autoencoder: Optional[m.Model] = None

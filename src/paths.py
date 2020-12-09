@@ -2,6 +2,7 @@ import pathlib as pl
 import pickle as p
 
 MAIN_DIRC = pl.Path(__file__).parent.parent
+EMBEDDINGS_DIRC = MAIN_DIRC.joinpath('embeddings')
 MODEL_DIRC = MAIN_DIRC.joinpath('models')
 PICKLE_DIRC = MAIN_DIRC.joinpath('pickle-files')
 CARD_NAMES_PATH = PICKLE_DIRC.joinpath('card_names.pickle')

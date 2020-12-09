@@ -1,15 +1,15 @@
 from typing import Tuple, List
 
 import tensorflow as tf
-from tensorflow.keras import models as m, layers as ly, losses as l
+from tensorflow.keras import models as m, layers as ly, optimizers as o
 
 import src.model.models.autoencoder as a
 
 
 class PlainAutoencoder(a.Seq2SeqAutoencoder):
 
-    def __init__(self, input_len: int, dense_sizes: List[int]):
-        super(PlainAutoencoder, self).__init__()
+    def __init__(self, input_len: int, dense_sizes: List[int], learning_rate: float) -> None:
+        super(PlainAutoencoder, self).__init__(learning_rate)
 
         if not (dense_sizes and PlainAutoencoder.in_desc_order(dense_sizes)):
             raise ValueError('dense layer sizes must be in descending order')
@@ -23,7 +23,8 @@ class PlainAutoencoder(a.Seq2SeqAutoencoder):
         return len(nums) == 1 or all([nums[i] > nums[i + 1] for i in range(len(nums) - 1)])
 
     def compile(self) -> None:
-        self.autoencoder.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        adam = o.Adam(learning_rate=self.learning_rate)
+        self.autoencoder.compile(optimizer=adam, loss='categorical_crossentropy', metrics=['accuracy'])
 
     def create_recursive_dense_layers(self, input_layer: ly.Input, reverse: bool = False) -> ly.Dense:
         dense_layer = None

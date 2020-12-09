@@ -1,13 +1,11 @@
 1. fix LSTM decoder..?
+1. multiple layers for LSTM
 1. get plain autoencoder working
     1. add embeddings?
-1. integrate mana-costs into arg parsing
 1. args for data augumentation rates
 1. add hyperparameter tuning via 
     1. json file listing out hyperparameter 
-    1. use grid search and cross validation
 1. regularization?
-1. add learning rate as hyperparameter
 1. additional user params
     1. data augmentation rates
     1. learning rate
